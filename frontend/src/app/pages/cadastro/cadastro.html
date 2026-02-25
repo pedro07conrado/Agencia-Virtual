@@ -9,18 +9,19 @@
     <div class="caixa-login">
       <h2>Cadastro</h2>
       
-      <form>
+      <form [formGroup]="cadastroForm">
+        
         <div class="campo">
           <label>Nome Completo</label>
-          <input type="text" placeholder="Digite seu nome">
+          <input type="text" formControlName="nome" placeholder="Digite seu nome">
         </div>
 
         <div class="campo">
           <label>CPF ou CNPJ</label>
-          <input type="text" placeholder="Apenas números">
+          <input type="text" formControlName="cpf" placeholder="Apenas números">
         </div>
 
-        <button type="button" class="btn-entrar">Criar minha conta</button>
+        <button type="button" class="btn-entrar" (click)="fazerCadastro()">Criar minha conta</button>
       </form>
 
       <p class="link-cadastro">Já tem uma conta? <a href="/login">Voltar para o Login</a></p>

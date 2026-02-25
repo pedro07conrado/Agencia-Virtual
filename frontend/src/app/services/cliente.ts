@@ -7,10 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ClienteService {
   
-  //  Aqui nós "injetamos" o HttpClient 
   private http = inject(HttpClient);
-
-   //  URL do backend Java
   private apiUrl = 'http://localhost:8080/clientes';
 
   listarClientes(): Observable<any> {
