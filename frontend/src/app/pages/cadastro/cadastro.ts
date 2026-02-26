@@ -1,24 +1,42 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms'; // 1. Trazemos as ferramentas de formulário
+import { Component, inject } from '@angular/core'; // 1. Adicionamos o 'inject' aqui!
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms'; 
 import { ClienteService } from '../../services/cliente';
+
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [ReactiveFormsModule], // 2. Avisamos o Angular que vamos usar formulários aqui
+  imports: [ReactiveFormsModule], 
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css'
 })
-export class Cadastro {
+export class CadastroComponent { // 2. Arrumamos o nome para CadastroComponent
   
-  // 3. Criamos o nosso grupo de campos (o "espelho" do HTML)
+  // 3. Chamamos o "Mensageiro" para dentro desta tela
+  private clienteService = inject(ClienteService);
+
   cadastroForm = new FormGroup({
-    nome: new FormControl(''), // Começa vazio
-    cpf: new FormControl('')   // Começa vazio
+    nome: new FormControl(''), 
+    cpf: new FormControl('')   
   });
 
-  // 4. A função que vai rodar quando clicarmos no botão
   fazerCadastro() {
-    // Por enquanto, vamos só imprimir no console para ter certeza que capturou!
-    console.log("Os dados digitados foram:", this.cadastroForm.value);
+    const dadosFormulario = this.cadastroForm.value;
+    console.log("Preparando para enviar ao Java:", dadosFormulario);
+
+    // 4. Usamos o Service para disparar o POST para o localhost:8080!
+    // O '.subscribe()' avisa o Angular para ficar esperando a resposta do Java.
+    this.clienteService.cadastrarCliente(dadosFormulario).subscribe({
+      next: (resposta) => {
+        // Se o Java retornar sucesso (200 OK)
+        alert('Cliente cadastrado com sucesso! 🎉');
+        console.log('Sucesso:', resposta);
+        this.cadastroForm.reset(); // Limpa as caixinhas da tela
+      },
+      error: (erro) => {
+        // Se o Java estiver desligado ou der erro
+        alert('Opa, deu erro ao salvar! Olha o console (F12) para ver os detalhes.');
+        console.error('Erro detalhado:', erro);
+      }
+    });
   }
 }
