@@ -17,10 +17,10 @@ public class UnidadeControleDTO {
     private String codUn;
 
     @NotBlank
-    private String CategoriaTarifa;
+    private String categoriaTarifa;
 
     @NotNull
-    private String ClienteId;
+    private Long clienteId;
 
     @Valid
     private EnderecoDTO endereco;

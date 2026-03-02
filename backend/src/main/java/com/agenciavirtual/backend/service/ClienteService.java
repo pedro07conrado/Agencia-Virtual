@@ -1,4 +1,4 @@
-package com.agenciavirtual.backend.services;
+package com.agenciavirtual.backend.service;
 
 import com.agenciavirtual.backend.dto.ClienteDTO;
 import com.agenciavirtual.backend.model.Cliente;

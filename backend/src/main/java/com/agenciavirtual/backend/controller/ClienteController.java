@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.agenciavirtual.backend.services.ClienteService;
+import com.agenciavirtual.backend.service.ClienteService;
 
 import java.util.List;
 

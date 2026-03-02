@@ -20,18 +20,20 @@ public class Cliente {
     private String cpf;
     private String email;
     private String telefone;
+    private String senha;
 
     @Embedded
     private Endereco endereco;
 
-    public Cliente(ClienteDTO dados){
-        this.nome = dados.getNome();
-        this.cpf = dados.getCpf();
-        this.email = dados.getEmail();
+    public Cliente(ClienteDTO dados) {
+        this.nome     = dados.getNome();
+        this.cpf      = dados.getCpf();
+        this.email    = dados.getEmail();
         this.telefone = dados.getTelefone();
-        this.endereco = new Endereco(dados.getEndereco());
+        this.senha    = dados.getSenha();
+        if (dados.getEndereco() != null) {
+            this.endereco = new Endereco(dados.getEndereco());
+        }
     }
-
-
-
 }
+

@@ -6,7 +6,7 @@ import lombok.*;
 
 @Setter
 @Getter
-@Table(name = "unidades_Controle")
+@Table(name = "unidades_controle")
 @Entity(name = "unidadeControle")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class UnidadeControle {
     private Long id;
     private String codUn;
     private String categoriaTarifa;
-    private String clienteId;
+    private Long clienteId;
 
     @Embedded
     private Endereco endereco;
