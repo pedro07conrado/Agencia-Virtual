@@ -1,0 +1,94 @@
+<div class="dashboard-wrapper">
+  <app-header></app-header>
+
+  <div class="dashboard-corpo">
+
+    <!-- Boas vindas -->
+    <div class="boas-vindas">
+      <h2>Olá, {{ nomeCliente }}! 👋</h2>
+      <p>Aqui estão suas unidades consumidoras e faturas.</p>
+    </div>
+
+    <!-- Suas UCs -->
+    <p class="secao-titulo">Suas Unidades Consumidoras</p>
+
+    <div *ngIf="carregandoUcs" class="loading">Carregando unidades...</div>
+
+    <div *ngIf="!carregandoUcs && ucs.length === 0" class="estado-vazio">
+      <div class="icone">🏢</div>
+      <p>Nenhuma unidade consumidora encontrada para sua conta.</p>
+    </div>
+
+    <div class="ucs-grid" *ngIf="!carregandoUcs && ucs.length > 0">
+      <div class="uc-card" *ngFor="let uc of ucs">
+        <div class="uc-card-topo">
+          <div>
+            <div class="uc-card-codigo">{{ uc.codUn }}</div>
+            <div class="uc-card-endereco">
+              {{ uc.endereco?.logradouro }}, {{ uc.endereco?.numero }}<br>
+              {{ uc.endereco?.cidade }} — {{ uc.endereco?.uf }}
+            </div>
+          </div>
+          <span class="badge badge-info">{{ uc.categoriaTarifa }}</span>
+        </div>
+        <div class="uc-card-corpo">
+          <div class="uc-stat">
+            <span class="uc-stat-label">Código da unidade</span>
+            <span class="uc-stat-valor">{{ uc.codUn }}</span>
+          </div>
+          <button class="btn-ver-faturas" (click)="verFaturas(uc)">
+            📄 Ver faturas desta unidade
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Painel de faturas da UC selecionada -->
+    <div class="faturas-painel" *ngIf="ucSelecionada">
+
+      <div class="faturas-painel-header">
+        <span class="faturas-painel-titulo">
+          Faturas — {{ ucSelecionada.codUn }}
+        </span>
+        <button class="btn-fechar-faturas" (click)="fecharFaturas()">✕</button>
+      </div>
+
+      <div *ngIf="carregandoFaturas" class="loading">Carregando faturas...</div>
+
+      <div *ngIf="!carregandoFaturas && faturas.length === 0" class="tabela-vazia">
+        Nenhuma fatura encontrada para esta unidade.
+      </div>
+
+      <table *ngIf="!carregandoFaturas && faturas.length > 0">
+        <thead>
+          <tr>
+            <th>Mês Ref.</th>
+            <th>Consumo</th>
+            <th>Valor</th>
+            <th>Vencimento</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of faturas">
+            <td>{{ f.mesReferencia }}</td>
+            <td>{{ f.consumoM3 }} m³</td>
+            <td>{{ f.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ f.vencimento | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge"
+                [class.badge-pendente]="f.status === 'PENDENTE'"
+                [class.badge-paga]="f.status === 'PAGA'"
+                [class.badge-vencida]="f.status === 'VENCIDA'"
+                [class.badge-cancelada]="f.status === 'CANCELADA'">
+                {{ f.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div>
