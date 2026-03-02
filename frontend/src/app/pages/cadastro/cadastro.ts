@@ -1,41 +1,116 @@
-import { Component, inject } from '@angular/core'; // 1. Adicionamos o 'inject' aqui!
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms'; 
+import { Component, inject } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
 import { ClienteService } from '../../services/cliente';
 
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [ReactiveFormsModule], 
+  imports: [ReactiveFormsModule, RouterLink, NgIf],
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css'
 })
-export class CadastroComponent { // 2. Arrumamos o nome para CadastroComponent
-  
-  // 3. Chamamos o "Mensageiro" para dentro desta tela
+export class CadastroComponent {
+
   private clienteService = inject(ClienteService);
 
-  cadastroForm = new FormGroup({
-    nome: new FormControl(''), 
-    cpf: new FormControl('')   
+  etapaAtual    = 1;
+  salvando      = false;
+  mostrarErros  = false;
+  mensagemErro  = '';
+  mensagemSucesso = '';
+
+  // ===== ETAPA 1 — Dados pessoais =====
+  etapa1Form = new FormGroup({
+    nome:           new FormControl('', [Validators.required]),
+    cpf:            new FormControl('', [Validators.required]),
+    telefone:       new FormControl(''),
+    email:          new FormControl(''),
+    senha:          new FormControl('', [Validators.required, Validators.minLength(6)]),
+    confirmarSenha: new FormControl('', [Validators.required])
   });
 
-  fazerCadastro() {
-    const dadosFormulario = this.cadastroForm.value;
-    console.log("Preparando para enviar ao Java:", dadosFormulario);
+  // ===== ETAPA 2 — Endereço =====
+  etapa2Form = new FormGroup({
+    cep:         new FormControl('', [Validators.required, Validators.pattern(/^\d{8}$/)]),
+    uf:          new FormControl('', [Validators.required]),
+    logradouro:  new FormControl('', [Validators.required]),
+    numero:      new FormControl('', [Validators.required]),
+    complemento: new FormControl(''),
+    bairro:      new FormControl('', [Validators.required]),
+    cidade:      new FormControl('', [Validators.required])
+  });
 
-    // 4. Usamos o Service para disparar o POST para o localhost:8080!
-    // O '.subscribe()' avisa o Angular para ficar esperando a resposta do Java.
-    this.clienteService.cadastrarCliente(dadosFormulario).subscribe({
-      next: (resposta) => {
-        // Se o Java retornar sucesso (200 OK)
-        alert('Cliente cadastrado com sucesso! 🎉');
-        console.log('Sucesso:', resposta);
-        this.cadastroForm.reset(); // Limpa as caixinhas da tela
+  avancarEtapa(): void {
+    this.mensagemErro = '';
+    this.mostrarErros = true;
+
+    if (this.etapa1Form.invalid) {
+      this.mensagemErro = 'Preencha todos os campos obrigatórios.';
+      return;
+    }
+
+    const f = this.etapa1Form.value;
+    if (f.senha !== f.confirmarSenha) {
+      this.mensagemErro = 'As senhas não coincidem.';
+      return;
+    }
+
+    this.mostrarErros = false;
+    this.mensagemErro = '';
+    this.etapaAtual = 2;
+  }
+
+  voltarEtapa(): void {
+    this.mostrarErros = false;
+    this.mensagemErro = '';
+    this.etapaAtual = 1;
+  }
+
+  fazerCadastro(): void {
+    this.mensagemErro = '';
+    this.mostrarErros = true;
+
+    if (this.etapa2Form.invalid) {
+      this.mensagemErro = 'Preencha todos os campos obrigatórios.';
+      return;
+    }
+
+    const e1 = this.etapa1Form.value;
+    const e2 = this.etapa2Form.value;
+
+    const payload = {
+      nome:     e1.nome,
+      cpf:      e1.cpf,
+      email:    e1.email,
+      telefone: e1.telefone,
+      senha:    e1.senha,
+      endereco: {
+        cep:         e2.cep,
+        uf:          e2.uf,
+        logradouro:  e2.logradouro,
+        numero:      e2.numero,
+        complemento: e2.complemento,
+        bairro:      e2.bairro,
+        cidade:      e2.cidade
+      }
+    };
+
+    this.salvando = true;
+
+    this.clienteService.cadastrarCliente(payload).subscribe({
+      next: () => {
+        this.mensagemSucesso = 'Conta criada com sucesso! Faça login para continuar.';
+        this.etapa1Form.reset();
+        this.etapa2Form.reset();
+        this.etapaAtual = 1;
+        this.mostrarErros = false;
+        this.salvando = false;
       },
-      error: (erro) => {
-        // Se o Java estiver desligado ou der erro
-        alert('Opa, deu erro ao salvar! Olha o console (F12) para ver os detalhes.');
-        console.error('Erro detalhado:', erro);
+      error: (err) => {
+        this.mensagemErro = err.error || 'Erro ao cadastrar. Tente novamente.';
+        this.salvando = false;
       }
     });
   }

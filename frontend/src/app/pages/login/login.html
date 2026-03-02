@@ -1,30 +1,41 @@
-<div class="tela-dividida">
-  
-  <div class="lado-azul">
-    <h1>Agência Virtual</h1>
-    <p>Bem-vindo! Acesse sua conta.</p>
+<div class="login-wrapper">
+  <div class="login-esquerda">
+    <div class="login-logo">
+      <div class="login-logo-icone">💧</div>
+      <div class="login-logo-texto">Agência <span>Virtual</span></div>
     </div>
-
-  <div class="lado-branco">
-    <div class="caixa-login">
-      <h2>Acessar minha conta</h2>
-      
-      <form>
-        <div class="campo">
-          <label>Login</label>
-          <input type="text" placeholder="Informe seu CPF ou E-mail">
-        </div>
-
-        <div class="campo">
-          <label>Senha</label>
-          <input type="password" placeholder="Informe sua senha">
-        </div>
-
-        <button type="button" class="btn-entrar">Acessar minha conta</button>
-      </form>
-
-      <p class="link-cadastro">Ainda não tem conta? <a href="/cadastro">Quero me cadastrar</a></p>
+    <h1 class="login-titulo">Sua conta de <em>água e esgoto</em> online</h1>
+    <p class="login-subtitulo">Acesse faturas, acompanhe o consumo e solicite serviços de forma rápida e segura.</p>
+    <div class="login-features">
+      <div class="login-feature-item"><div class="icone">📄</div><span>Visualize e pague suas faturas</span></div>
+      <div class="login-feature-item"><div class="icone">📊</div><span>Acompanhe o histórico de consumo</span></div>
+      <div class="login-feature-item"><div class="icone">🔔</div><span>Receba alertas importantes</span></div>
     </div>
   </div>
 
+  <div class="login-direita">
+    <div class="login-card">
+      <h2 class="login-card-titulo">Acessar minha conta</h2>
+      <p class="login-card-subtitulo">Use seu CPF ou e-mail para entrar</p>
+
+      <div *ngIf="erro" class="mensagem-erro">{{ erro }}</div>
+
+      <form [formGroup]="loginForm">
+        <div class="campo-grupo">
+          <label>CPF ou E-mail</label>
+          <input type="text" formControlName="identificador"
+            placeholder="00000000000 ou email@exemplo.com" />
+        </div>
+        <div class="campo-grupo">
+          <label>Senha</label>
+          <input type="password" formControlName="senha" placeholder="••••••••" />
+        </div>
+        <button type="button" class="btn-primario" (click)="entrar()" [disabled]="entrando">
+          {{ entrando ? 'Entrando...' : 'Entrar na minha conta' }}
+        </button>
+      </form>
+
+      <p class="login-rodape">Ainda não tem conta? <a [routerLink]="['/cadastro']">Criar cadastro</a></p>
+    </div>
+  </div>
 </div>
