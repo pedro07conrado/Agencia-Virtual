@@ -1,7 +1,13 @@
-<header class="top-header">
-  <div class="logo">🏢 Agência Virtual</div>
-  <div class="user-info">
-    <span>Welcome truta!</span>
-    <button class="btn-sair" routerLink="/login">Sair</button>
+<header class="app-header">
+  <a class="header-logo" [routerLink]="['/dashboard']">
+    <div class="header-logo-icone">💧</div>
+    <div class="header-logo-nome">Agência <span>Virtual</span></div>
+  </a>
+  <div class="header-direita">
+    <div class="header-usuario">
+      <div class="header-avatar">👤</div>
+      <span class="header-nome">Olá, {{ nomeCliente }}!</span>
+    </div>
+    <button class="btn-sair" (click)="sair()">Sair</button>
   </div>
 </header>

@@ -1,23 +1,90 @@
-.top-header {
-  background-color: #0056b3;
-  color: white;
-  padding: 15px 30px;
+.app-header {
+  height: 62px;
+  background: var(--azul-profundo);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(10,37,64,0.3);
 }
-.btn-sair {
-  background: none;
-  border: 1px solid white;
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.header-logo-icone {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.header-logo-nome {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
   color: white;
-  padding: 5px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 15px;
-  font-weight: bold;
+  letter-spacing: -0.2px;
 }
+
+.header-logo-nome span {
+  color: var(--agua);
+}
+
+.header-direita {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-avatar {
+  width: 34px;
+  height: 34px;
+  background: rgba(6,182,212,0.25);
+  border: 1px solid rgba(6,182,212,0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.header-nome {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+}
+
+.btn-sair {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+  padding: 6px 16px;
+  border-radius: var(--raio-sm);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  transition: var(--transicao);
+}
+
 .btn-sair:hover {
-  background: white;
-  color: #0056b3;
+  background: rgba(255,255,255,0.15);
+  color: white;
 }

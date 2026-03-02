@@ -1,7 +1,27 @@
 <nav class="sidebar">
-  <ul>
-    <li><a routerLink="/clientes" routerLinkActive="ativo">👥 Clientes</a></li>
-    <li><a routerLink="/faturas" routerLinkActive="ativo">📄 Faturas</a></li>
-    <li><a routerLink="/unidades" routerLinkActive="ativo">🏢 Unid. de Controle</a></li>
-  </ul>
+
+  <div class="sidebar-secao">
+    <p class="sidebar-secao-titulo">Menu Principal</p>
+    <ul class="sidebar-menu">
+      <li>
+        <a [routerLink]="['/clientes']" routerLinkActive="ativo">
+          <div class="nav-icone">👥</div>
+          Clientes
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/faturas']" routerLinkActive="ativo">
+          <div class="nav-icone">📄</div>
+          Faturas
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/unidades']" routerLinkActive="ativo">
+          <div class="nav-icone">🏢</div>
+          Unid. de Controle
+        </a>
+      </li>
+    </ul>
+  </div>
+
 </nav>

@@ -1,1 +1,89 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+:root {
+  --azul-profundo:   #0a2540;
+  --azul-principal:  #1a56db;
+  --azul-claro:      #e8f0fe;
+  --azul-medio:      #3b82f6;
+  --agua:            #06b6d4;
+  --branco:          #ffffff;
+  --cinza-fundo:     #f0f4f8;
+  --cinza-borda:     #dde3eb;
+  --cinza-texto:     #64748b;
+  --cinza-escuro:    #334155;
+  --verde-sucesso:   #10b981;
+  --vermelho-erro:   #ef4444;
+  --amarelo-aviso:   #f59e0b;
+
+  --sombra-sm: 0 1px 3px rgba(10,37,64,0.08), 0 1px 2px rgba(10,37,64,0.06);
+  --sombra-md: 0 4px 16px rgba(10,37,64,0.10), 0 2px 6px rgba(10,37,64,0.06);
+  --sombra-lg: 0 10px 40px rgba(10,37,64,0.14), 0 4px 12px rgba(10,37,64,0.08);
+
+  --raio: 10px;
+  --raio-sm: 6px;
+  --raio-lg: 16px;
+
+  --transicao: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--cinza-escuro);
+  background-color: var(--cinza-fundo);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+a {
+  color: var(--azul-principal);
+  text-decoration: none;
+  transition: var(--transicao);
+}
+
+a:hover {
+  color: var(--azul-medio);
+}
+
+button {
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: var(--transicao);
+}
+
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cinza-fundo); }
+::-webkit-scrollbar-thumb { background: var(--cinza-borda); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cinza-texto); }
+
+/* Utilitários globais */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Sora', sans-serif;
+}
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-danger  { background: #fee2e2; color: #991b1b; }
+.badge-info    { background: var(--azul-claro); color: var(--azul-profundo); }
