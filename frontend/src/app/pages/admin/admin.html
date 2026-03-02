@@ -1,0 +1,269 @@
+<div class="admin-wrapper">
+  <app-header></app-header>
+
+  <div class="admin-corpo">
+
+    <div class="admin-topo">
+      <div class="admin-titulo">
+        <h2>Painel Administrativo</h2>
+        <p>Gerencie unidades consumidoras e faturas dos clientes</p>
+      </div>
+    </div>
+
+    <!-- Abas -->
+    <div class="abas">
+      <button class="aba" [class.ativa]="abaAtiva === 'uc'" (click)="abaAtiva = 'uc'">
+        🏢 Unidades Consumidoras
+      </button>
+      <button class="aba" [class.ativa]="abaAtiva === 'fatura'" (click)="abaAtiva = 'fatura'">
+        📄 Faturas
+      </button>
+    </div>
+
+    <!-- ============ ABA UC ============ -->
+    <div *ngIf="abaAtiva === 'uc'">
+
+      <div class="form-card">
+        <div class="form-card-titulo">
+          {{ ucEditandoId ? 'Editar Unidade Consumidora' : 'Cadastrar Nova Unidade Consumidora' }}
+        </div>
+
+        <div *ngIf="ucErro"     class="alerta alerta-erro">{{ ucErro }}</div>
+        <div *ngIf="ucSucesso"  class="alerta alerta-sucesso">{{ ucSucesso }}</div>
+
+        <form [formGroup]="ucForm">
+
+          <p class="secao-titulo">Dados da UC</p>
+
+          <div class="campo-row">
+            <div class="campo-grupo">
+              <label>Código da UC *</label>
+              <input type="text" formControlName="codUn" placeholder="Ex: UC-001" />
+            </div>
+            <div class="campo-grupo">
+              <label>ID do Cliente *</label>
+              <input type="number" formControlName="clienteId" placeholder="ID do cliente no sistema" />
+            </div>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Categoria Tarifária *</label>
+            <select formControlName="categoriaTarifa">
+              <option value="">Selecione...</option>
+              <option value="Residencial">Residencial</option>
+              <option value="Comercial">Comercial</option>
+              <option value="Industrial">Industrial</option>
+              <option value="Público">Público</option>
+            </select>
+          </div>
+
+          <p class="secao-titulo">Endereço da UC</p>
+
+          <div class="campo-row">
+            <div class="campo-grupo">
+              <label>CEP *</label>
+              <input type="text" formControlName="cep" placeholder="00000000" />
+            </div>
+            <div class="campo-grupo">
+              <label>UF *</label>
+              <input type="text" formControlName="uf" placeholder="SP" maxlength="2" />
+            </div>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Logradouro *</label>
+            <input type="text" formControlName="logradouro" placeholder="Rua, Avenida..." />
+          </div>
+
+          <div class="campo-row">
+            <div class="campo-grupo">
+              <label>Número *</label>
+              <input type="text" formControlName="numero" placeholder="123" />
+            </div>
+            <div class="campo-grupo">
+              <label>Complemento</label>
+              <input type="text" formControlName="complemento" placeholder="Apto, Bloco..." />
+            </div>
+          </div>
+
+          <div class="campo-row">
+            <div class="campo-grupo">
+              <label>Bairro *</label>
+              <input type="text" formControlName="bairro" placeholder="Nome do bairro" />
+            </div>
+            <div class="campo-grupo">
+              <label>Cidade *</label>
+              <input type="text" formControlName="cidade" placeholder="Nome da cidade" />
+            </div>
+          </div>
+
+        </form>
+
+        <div class="form-rodape">
+          <button class="btn-limpar" (click)="limparUc()">Limpar</button>
+          <button class="btn-salvar" (click)="salvarUc()" [disabled]="salvandoUc">
+            {{ salvandoUc ? 'Salvando...' : (ucEditandoId ? 'Salvar alterações' : 'Cadastrar UC') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela UCs -->
+      <div class="tabela-card">
+        <div class="tabela-header">
+          <span class="tabela-header-titulo">Unidades Cadastradas</span>
+          <span class="tabela-contador">{{ ucs.length }} registro(s)</span>
+        </div>
+
+        <div *ngIf="carregandoUcs" class="loading">Carregando...</div>
+
+        <div *ngIf="!carregandoUcs && ucs.length === 0" class="tabela-vazia">
+          Nenhuma unidade cadastrada ainda.
+        </div>
+
+        <table *ngIf="!carregandoUcs && ucs.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Código UC</th>
+              <th>Categoria</th>
+              <th>ID Cliente</th>
+              <th>Cidade / UF</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of ucs">
+              <td>{{ u.id }}</td>
+              <td><span class="badge badge-info">{{ u.codUn }}</span></td>
+              <td>{{ u.categoriaTarifa }}</td>
+              <td>{{ u.clienteId }}</td>
+              <td>{{ u.endereco?.cidade }} / {{ u.endereco?.uf }}</td>
+              <td>
+                <div class="acoes">
+                  <button class="btn-acao" title="Editar" (click)="editarUc(u)">✏️</button>
+                  <button class="btn-acao excluir" title="Excluir" (click)="excluirUc(u.id)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- ============ ABA FATURA ============ -->
+    <div *ngIf="abaAtiva === 'fatura'">
+
+      <div class="form-card">
+        <div class="form-card-titulo">
+          {{ faturaEditandoId ? 'Editar Fatura' : 'Lançar Nova Fatura' }}
+        </div>
+
+        <div *ngIf="faturaErro"    class="alerta alerta-erro">{{ faturaErro }}</div>
+        <div *ngIf="faturaSucesso" class="alerta alerta-sucesso">{{ faturaSucesso }}</div>
+
+        <form [formGroup]="faturaForm">
+
+          <div class="campo-row">
+            <div class="campo-grupo">
+              <label>ID da UC *</label>
+              <input type="number" formControlName="ucId" placeholder="ID da unidade consumidora" />
+            </div>
+            <div class="campo-grupo">
+              <label>Mês de Referência * (YYYY-MM)</label>
+              <input type="month" formControlName="mesReferencia" />
+            </div>
+          </div>
+
+          <div class="campo-row-3">
+            <div class="campo-grupo">
+              <label>Consumo (m³) *</label>
+              <input type="number" formControlName="consumoM3" placeholder="Ex: 15" />
+            </div>
+            <div class="campo-grupo">
+              <label>Valor (R$) *</label>
+              <input type="number" step="0.01" formControlName="valor" placeholder="Ex: 89.90" />
+            </div>
+            <div class="campo-grupo">
+              <label>Vencimento *</label>
+              <input type="date" formControlName="vencimento" />
+            </div>
+          </div>
+
+          <div class="campo-grupo" style="max-width: 200px;">
+            <label>Status *</label>
+            <select formControlName="status">
+              <option value="PENDENTE">Pendente</option>
+              <option value="PAGA">Paga</option>
+              <option value="VENCIDA">Vencida</option>
+              <option value="CANCELADA">Cancelada</option>
+            </select>
+          </div>
+
+        </form>
+
+        <div class="form-rodape">
+          <button class="btn-limpar" (click)="limparFatura()">Limpar</button>
+          <button class="btn-salvar" (click)="salvarFatura()" [disabled]="salvandoFatura">
+            {{ salvandoFatura ? 'Salvando...' : (faturaEditandoId ? 'Salvar alterações' : 'Lançar fatura') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela Faturas -->
+      <div class="tabela-card">
+        <div class="tabela-header">
+          <span class="tabela-header-titulo">Faturas Lançadas</span>
+          <span class="tabela-contador">{{ faturas.length }} registro(s)</span>
+        </div>
+
+        <div *ngIf="carregandoFaturas" class="loading">Carregando...</div>
+
+        <div *ngIf="!carregandoFaturas && faturas.length === 0" class="tabela-vazia">
+          Nenhuma fatura lançada ainda.
+        </div>
+
+        <table *ngIf="!carregandoFaturas && faturas.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>UC ID</th>
+              <th>Mês Ref.</th>
+              <th>Consumo</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of faturas">
+              <td>{{ f.id }}</td>
+              <td>{{ f.ucId }}</td>
+              <td>{{ f.mesReferencia }}</td>
+              <td>{{ f.consumoM3 }} m³</td>
+              <td>{{ f.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+              <td>{{ f.vencimento | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-pendente]="f.status === 'PENDENTE'"
+                  [class.badge-paga]="f.status === 'PAGA'"
+                  [class.badge-vencida]="f.status === 'VENCIDA'">
+                  {{ f.status }}
+                </span>
+              </td>
+              <td>
+                <div class="acoes">
+                  <button class="btn-acao" title="Editar" (click)="editarFatura(f)">✏️</button>
+                  <button class="btn-acao excluir" title="Excluir" (click)="excluirFatura(f.id)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</div>
