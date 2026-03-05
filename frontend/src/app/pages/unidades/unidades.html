@@ -6,59 +6,54 @@
 
     <main class="pagina-conteudo">
 
-      <!-- Topo -->
       <div class="pagina-topo">
         <div class="pagina-titulo">
-          <h2>Clientes</h2>
-          <p>Gerencie os clientes cadastrados no sistema</p>
+          <h2>Unidades de Controle</h2>
+          <p>Gerencie as unidades vinculadas a clientes</p>
         </div>
         <button class="btn-novo" (click)="abrirModalNovo()">
-          + Novo Cliente
+          + Nova Unidade
         </button>
       </div>
 
-      <!-- Mensagens -->
       <div *ngIf="mensagemSucesso" class="alerta alerta-sucesso">{{ mensagemSucesso }}</div>
       <div *ngIf="mensagemErro"    class="alerta alerta-erro">{{ mensagemErro }}</div>
 
-      <!-- Tabela -->
       <div class="tabela-card">
         <div class="tabela-header">
-          <span class="tabela-header-titulo">Lista de Clientes</span>
-          <span class="tabela-contador">{{ clientes.length }} registro(s)</span>
+          <span class="tabela-header-titulo">Lista de Unidades</span>
+          <span class="tabela-contador">{{ unidades.length }} registro(s)</span>
         </div>
 
         <div *ngIf="carregando" class="tabela-loading">Carregando...</div>
 
-        <div *ngIf="!carregando && clientes.length === 0" class="tabela-vazia">
-          <div class="icone-vazio">👥</div>
-          <p>Nenhum cliente cadastrado ainda.</p>
+        <div *ngIf="!carregando && unidades.length === 0" class="tabela-vazia">
+          <div class="icone-vazio">🏢</div>
+          <p>Nenhuma unidade cadastrada ainda.</p>
         </div>
 
-        <table *ngIf="!carregando && clientes.length > 0">
+        <table *ngIf="!carregando && unidades.length > 0">
           <thead>
             <tr>
               <th>#</th>
-              <th>Nome</th>
-              <th>CPF</th>
-              <th>E-mail</th>
-              <th>Telefone</th>
+              <th>Código UN</th>
+              <th>Categoria Tarifa</th>
+              <th>ID Cliente</th>
               <th>Cidade / UF</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let c of clientes">
-              <td>{{ c.id }}</td>
-              <td class="td-nome">{{ c.nome }}</td>
-              <td class="td-cpf">{{ c.cpf }}</td>
-              <td>{{ c.email || '—' }}</td>
-              <td>{{ c.telefone || '—' }}</td>
-              <td>{{ c.endereco?.cidade || '—' }} / {{ c.endereco?.uf || '—' }}</td>
+            <tr *ngFor="let u of unidades">
+              <td>{{ u.id }}</td>
+              <td><span class="badge badge-info">{{ u.codUn }}</span></td>
+              <td>{{ u.categoriaTarifa }}</td>
+              <td>{{ u.clienteId }}</td>
+              <td>{{ u.endereco?.cidade || '—' }} / {{ u.endereco?.uf || '—' }}</td>
               <td>
                 <div class="acoes">
-                  <button class="btn-acao" title="Editar" (click)="abrirModalEditar(c)">✏️</button>
-                  <button class="btn-acao excluir" title="Excluir" (click)="excluir(c.id)">🗑️</button>
+                  <button class="btn-acao" title="Editar" (click)="abrirModalEditar(u)">✏️</button>
+                  <button class="btn-acao excluir" title="Excluir" (click)="excluir(u.id)">🗑️</button>
                 </div>
               </td>
             </tr>
@@ -70,45 +65,39 @@
   </div>
 </div>
 
-<!-- ======= MODAL ======= -->
+<!-- MODAL -->
 <div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModalFora($event)">
   <div class="modal">
 
     <div class="modal-header">
-      <h3>{{ modoEdicao ? 'Editar Cliente' : 'Novo Cliente' }}</h3>
+      <h3>{{ modoEdicao ? 'Editar Unidade' : 'Nova Unidade' }}</h3>
       <button class="modal-fechar" (click)="fecharModal()">✕</button>
     </div>
 
     <div class="modal-corpo">
-
       <div *ngIf="modalErro" class="alerta alerta-erro">{{ modalErro }}</div>
 
-      <form [formGroup]="clienteForm">
+      <form [formGroup]="unidadeForm">
 
-        <p class="modal-secao">Dados Pessoais</p>
-
-        <div class="campo-grupo">
-          <label>Nome Completo *</label>
-          <input type="text" formControlName="nome" placeholder="Nome completo do cliente" />
-        </div>
+        <p class="modal-secao">Dados da Unidade</p>
 
         <div class="campo-row">
           <div class="campo-grupo">
-            <label>CPF *</label>
-            <input type="text" formControlName="cpf" placeholder="00000000000" />
+            <label>Código UN *</label>
+            <input type="text" formControlName="codUn" placeholder="Ex: UN-001" />
           </div>
           <div class="campo-grupo">
-            <label>Telefone</label>
-            <input type="text" formControlName="telefone" placeholder="(00) 00000-0000" />
+            <label>ID do Cliente *</label>
+            <input type="number" formControlName="clienteId" placeholder="Ex: 1" />
           </div>
         </div>
 
         <div class="campo-grupo">
-          <label>E-mail</label>
-          <input type="email" formControlName="email" placeholder="email@exemplo.com" />
+          <label>Categoria de Tarifa *</label>
+          <input type="text" formControlName="categoriaTarifa" placeholder="Ex: Residencial, Comercial..." />
         </div>
 
-        <p class="modal-secao">Endereço</p>
+        <p class="modal-secao">Endereço da Unidade</p>
 
         <div class="campo-row">
           <div class="campo-grupo">
@@ -133,7 +122,7 @@
           </div>
           <div class="campo-grupo">
             <label>Complemento</label>
-            <input type="text" formControlName="complemento" placeholder="Apto, Bloco..." />
+            <input type="text" formControlName="complemento" placeholder="Apto..." />
           </div>
         </div>
 

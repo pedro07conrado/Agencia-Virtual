@@ -1,0 +1,135 @@
+<div class="pagina-wrapper">
+  <app-header></app-header>
+
+  <div class="pagina-corpo">
+    <app-navbar></app-navbar>
+
+    <main class="pagina-conteudo">
+
+      <div class="pagina-topo">
+        <div class="pagina-titulo">
+          <h2>Faturas</h2>
+          <p>Histórico e gestão de faturas do sistema</p>
+        </div>
+        <button class="btn-novo" (click)="abrirModalNovo()">
+          + Nova Fatura
+        </button>
+      </div>
+
+      <div *ngIf="mensagemSucesso" class="alerta alerta-sucesso">{{ mensagemSucesso }}</div>
+      <div *ngIf="mensagemErro"    class="alerta alerta-erro">{{ mensagemErro }}</div>
+
+      <div class="tabela-card">
+        <div class="tabela-header">
+          <span class="tabela-header-titulo">Lista de Faturas</span>
+          <span class="tabela-contador">{{ faturas.length }} registro(s)</span>
+        </div>
+
+        <div *ngIf="carregando" class="tabela-loading">Carregando...</div>
+
+        <div *ngIf="!carregando && faturas.length === 0" class="tabela-vazia">
+          <div class="icone-vazio">📄</div>
+          <p>Nenhuma fatura cadastrada ainda.</p>
+        </div>
+
+        <table *ngIf="!carregando && faturas.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Unidade</th>
+              <th>Mês Ref.</th>
+              <th>Consumo (m³)</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of faturas">
+              <td>{{ f.id }}</td>
+              <td>{{ f.uncld }}</td>
+              <td>{{ f.mesReferencia }}</td>
+              <td>{{ f.consumoM3 }} m³</td>
+              <td>{{ f.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+              <td>{{ f.vencimento | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="badge" [class.badge-success]="f.status" [class.badge-danger]="!f.status">
+                  {{ f.status ? 'Paga' : 'Pendente' }}
+                </span>
+              </td>
+              <td>
+                <div class="acoes">
+                  <button class="btn-acao" title="Editar" (click)="abrirModalEditar(f)">✏️</button>
+                  <button class="btn-acao excluir" title="Excluir" (click)="excluir(f.id)">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" *ngIf="modalAberto" (click)="fecharModalFora($event)">
+  <div class="modal">
+
+    <div class="modal-header">
+      <h3>{{ modoEdicao ? 'Editar Fatura' : 'Nova Fatura' }}</h3>
+      <button class="modal-fechar" (click)="fecharModal()">✕</button>
+    </div>
+
+    <div class="modal-corpo">
+      <div *ngIf="modalErro" class="alerta alerta-erro">{{ modalErro }}</div>
+
+      <form [formGroup]="faturaForm">
+        <div class="campo-row">
+          <div class="campo-grupo">
+            <label>ID Unidade de Controle *</label>
+            <input type="number" formControlName="uncld" placeholder="Ex: 1" />
+          </div>
+          <div class="campo-grupo">
+            <label>Mês de Referência *</label>
+            <input type="text" formControlName="mesReferencia" placeholder="MM/AAAA" />
+          </div>
+        </div>
+
+        <div class="campo-row">
+          <div class="campo-grupo">
+            <label>Consumo (m³) *</label>
+            <input type="number" formControlName="consumoM3" placeholder="Ex: 15" />
+          </div>
+          <div class="campo-grupo">
+            <label>Valor (R$) *</label>
+            <input type="number" step="0.01" formControlName="valor" placeholder="Ex: 89.90" />
+          </div>
+        </div>
+
+        <div class="campo-row">
+          <div class="campo-grupo">
+            <label>Vencimento *</label>
+            <input type="date" formControlName="vencimento" />
+          </div>
+          <div class="campo-grupo">
+            <label>Status</label>
+            <select formControlName="status" style="width:100%;padding:10px 14px;border:1.5px solid var(--cinza-borda);border-radius:6px;background:var(--cinza-fundo);font-size:13.5px;">
+              <option [ngValue]="false">Pendente</option>
+              <option [ngValue]="true">Paga</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-rodape">
+      <button class="btn-cancelar" (click)="fecharModal()">Cancelar</button>
+      <button class="btn-salvar" (click)="salvar()" [disabled]="salvando">
+        {{ salvando ? 'Salvando...' : (modoEdicao ? 'Salvar alterações' : 'Cadastrar') }}
+      </button>
+    </div>
+
+  </div>
+</div>
